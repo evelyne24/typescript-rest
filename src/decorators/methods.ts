@@ -268,5 +268,17 @@ function getParameterProcessors() {
         }
         serviceMethod.mustParseBody = true;
     });
+    result.set(ParamType.raw_body, (serviceMethod) => {
+        if (serviceMethod.mustParseForms) {
+            throw Error('Can not use form parameters with a raw body parameter on the same method.');
+        }
+        if (serviceMethod.mustParseBody) {
+            throw Error('Can not use json body parameters with a raw body parameter on the same method.');
+        }
+        if (serviceMethod.mustParseRawBody) {
+            throw Error('Can not use more than one raw body parameter on the same method.');
+        }
+        serviceMethod.mustParseRawBody = true;
+    });
     return result;
 }

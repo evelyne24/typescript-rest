@@ -334,6 +334,9 @@ export class ServerContainer {
         if (serviceMethod.mustParseForms || serviceMethod.acceptMultiTypedParam) {
             result.push(this.buildFormParserMiddleware(bodyParserOptions));
         }
+        if (serviceMethod.mustParseRawBody) {
+            result.push(this.buildRawBodyParserMiddleware(bodyParserOptions));
+        }
         if (serviceMethod.files.length > 0) {
             result.push(this.buildFilesParserMiddleware(serviceMethod));
         }
@@ -372,6 +375,17 @@ export class ServerContainer {
         }
         else {
             middleware = bodyParser.json();
+        }
+        return middleware;
+    }
+
+    private buildRawBodyParserMiddleware(bodyParserOptions: any) {
+        let middleware: express.RequestHandler;
+        if (bodyParserOptions) {
+            middleware = bodyParser.raw(bodyParserOptions);
+        }
+        else {
+            middleware = bodyParser.raw();
         }
         return middleware;
     }

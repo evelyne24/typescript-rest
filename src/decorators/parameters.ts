@@ -333,6 +333,31 @@ export function FormParam(name: string) {
 }
 
 /**
+ * Creates a mapping between a raw body parameter on request and a method
+ * argument.
+ *
+ * For example:
+ *
+ * ```
+ * @ Path('webhook')
+ * class WebhookService {
+ *   @ POST
+ *   getPeople(@ RawBody() body: string) {
+ *      // ...
+ *   }
+ * }
+ * ```
+ *
+ * Will create a service that listen for requests and bind the
+ * request raw body to the name argument on getPerson
+ * method's call.
+ */
+export function RawBody(...args: Array<any>) {
+    return new ParameterDecorator('RawBody').withType(ParamType.raw_body)
+        .decorateParameterOrProperty(args);
+}
+
+/**
  * Creates a mapping between a parameter on request and a method
  * argument.
  *

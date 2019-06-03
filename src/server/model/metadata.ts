@@ -56,6 +56,7 @@ export class ServiceMethod {
     public mustParseCookies: boolean = false;
     public files: Array<FileParam> = new Array<FileParam>();
     public mustParseBody: boolean = false;
+    public mustParseRawBody: boolean = false;
     public bodyParserOptions: any;
     public mustParseForms: boolean = false;
     public acceptMultiTypedParam: boolean = false;
@@ -106,6 +107,7 @@ export enum ParamType {
     cookie,
     form,
     body,
+    raw_body,
     param,
     file,
     files,
