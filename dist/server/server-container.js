@@ -330,14 +330,14 @@ var ServerContainer = /** @class */ (function () {
         if (serviceMethod.mustParseCookies) {
             result.push(this.buildCookieParserMiddleware());
         }
+        if (serviceMethod.mustParseRawBody) {
+            result.push(this.buildRawBodyParserMiddleware(bodyParserOptions));
+        }
         if (serviceMethod.mustParseBody) {
             result.push(this.buildJsonBodyParserMiddleware(bodyParserOptions));
         }
         if (serviceMethod.mustParseForms || serviceMethod.acceptMultiTypedParam) {
             result.push(this.buildFormParserMiddleware(bodyParserOptions));
-        }
-        if (serviceMethod.mustParseRawBody) {
-            result.push(this.buildRawBodyParserMiddleware(bodyParserOptions));
         }
         if (serviceMethod.files.length > 0) {
             result.push(this.buildFilesParserMiddleware(serviceMethod));
@@ -378,6 +378,7 @@ var ServerContainer = /** @class */ (function () {
     };
     ServerContainer.prototype.buildRawBodyParserMiddleware = function (bodyParserOptions) {
         var middleware;
+        // tslint:disable-next-line:no-console
         if (bodyParserOptions) {
             middleware = bodyParser.raw(bodyParserOptions);
         }

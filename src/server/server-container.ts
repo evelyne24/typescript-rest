@@ -324,9 +324,11 @@ export class ServerContainer {
     private buildParserMiddlewares(serviceClass: ServiceClass, serviceMethod: ServiceMethod): Array<express.RequestHandler> {
         const result: Array<express.RequestHandler> = new Array<express.RequestHandler>();
         const bodyParserOptions = serviceMethod.bodyParserOptions || serviceClass.bodyParserOptions;
-
         if (serviceMethod.mustParseCookies) {
             result.push(this.buildCookieParserMiddleware());
+        }
+        if (serviceMethod.mustParseRawBody) {
+            result.push(this.buildRawBodyParserMiddleware(bodyParserOptions));
         }
         if (serviceMethod.mustParseBody) {
             result.push(this.buildJsonBodyParserMiddleware(bodyParserOptions));
@@ -334,13 +336,9 @@ export class ServerContainer {
         if (serviceMethod.mustParseForms || serviceMethod.acceptMultiTypedParam) {
             result.push(this.buildFormParserMiddleware(bodyParserOptions));
         }
-        if (serviceMethod.mustParseRawBody) {
-            result.push(this.buildRawBodyParserMiddleware(bodyParserOptions));
-        }
         if (serviceMethod.files.length > 0) {
             result.push(this.buildFilesParserMiddleware(serviceMethod));
         }
-
         return result;
     }
 
@@ -381,6 +379,7 @@ export class ServerContainer {
 
     private buildRawBodyParserMiddleware(bodyParserOptions: any) {
         let middleware: express.RequestHandler;
+        // tslint:disable-next-line:no-console
         if (bodyParserOptions) {
             middleware = bodyParser.raw(bodyParserOptions);
         }

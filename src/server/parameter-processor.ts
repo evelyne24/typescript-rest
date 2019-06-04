@@ -36,6 +36,7 @@ export class ParameterProcessor {
         parameterMapper.set(ParamType.cookie, (context, property) => this.convertType(context.request.cookies[property.name], property.propertyType));
         parameterMapper.set(ParamType.raw_body, (context) => context.request.body);
         parameterMapper.set(ParamType.body, (context, property) => this.convertType(context.request.body, property.propertyType));
+        parameterMapper.set(ParamType.raw_body, (context) => context.request.body);
         parameterMapper.set(ParamType.file, (context, property) => {
             // @ts-ignore
             const files: Array<Express.Multer.File> = context.request.files ? context.request.files[property.name] : null;

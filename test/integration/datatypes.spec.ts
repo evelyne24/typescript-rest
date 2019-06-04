@@ -161,6 +161,13 @@ export class TestParamsService {
             && (myField === 'my_value'));
     }
 
+    @POST
+    @Path('raw')
+    @BodyOptions({type: '*/*'})
+    public testRawBody(@RawBody body: Buffer): string {
+        return JSON.stringify(body)+'-'+body.toString('utf8');
+    }
+
     @GET
     @Path('download')
     public testDownloadFile(): Promise<Return.DownloadBinaryData> {
@@ -301,12 +308,22 @@ describe('Data Types Tests', () => {
     });
 
     describe('A rest Service', () => {
-        it('should parse header and cookies correclty', (done) => {
+        it('should parse header and cookies correctly', (done) => {
             request({
                 headers: { 'my-header': 'header value', 'Cookie': 'my-cookie=cookie value' },
                 url: 'http://localhost:5674/testparams/headers'
             }, (error, response, body) => {
                 expect(body).to.eq('cookie: cookie value|header: header value');
+                done();
+            });
+        });
+
+        it.only('should read raw body', (done) => {
+            request.post({
+                body: "123",
+                url: 'http://localhost:5674/testparams/raw'
+            }, (error, response, body) => {
+                expect(body).to.eq('3');
                 done();
             });
         });

@@ -25,6 +25,7 @@ var ParameterProcessor = /** @class */ (function () {
         parameterMapper.set(metadata_1.ParamType.header, function (context, property) { return _this.convertType(context.request.header(property.name), property.propertyType); });
         parameterMapper.set(metadata_1.ParamType.cookie, function (context, property) { return _this.convertType(context.request.cookies[property.name], property.propertyType); });
         parameterMapper.set(metadata_1.ParamType.body, function (context, property) { return _this.convertType(context.request.body, property.propertyType); });
+        parameterMapper.set(metadata_1.ParamType.raw_body, function (context) { return context.request.body; });
         parameterMapper.set(metadata_1.ParamType.file, function (context, property) {
             // @ts-ignore
             var files = context.request.files ? context.request.files[property.name] : null;
