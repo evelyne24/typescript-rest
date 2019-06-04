@@ -10,7 +10,7 @@ import { Container } from 'typescript-ioc';
 import {
     BodyOptions, Context, ContextNext, ContextRequest,
     ContextResponse, CookieParam, FileParam, FormParam, GET,
-    HeaderParam, Param, Path, PathParam, POST, PUT, QueryParam, Return, Server, ServiceContext
+    HeaderParam, Param, Path, PathParam, POST, PUT, QueryParam, RawBody, Return, Server, ServiceContext
 } from '../../src/typescript-rest';
 const expect = chai.expect;
 
@@ -47,6 +47,13 @@ export class TestParamsService {
         return new Promise<Person>(function (resolve, reject) {
             resolve(new Person(id, `This is the person with ID = ${id}`, 35));
         });
+    }
+
+    @POST
+    @Path('/raw')
+    @BodyOptions({type:"*/*"})
+    public setData(@RawBody data: Buffer): string {
+        return data.length+'-'+data.toString('utf8');
     }
 
     @PUT
@@ -236,6 +243,17 @@ describe('Data Types Tests', () => {
             request('http://localhost:5674/testparams/people?start=0&size=3', (error, response, body) => {
                 const result: Array<Person> = JSON.parse(body);
                 expect(result.length).to.eq(3);
+                done();
+            });
+        });
+
+        it('should be able to receive raw data in the body', (done) => {
+            request.post({
+                body: "123",
+                headers: { 'content-type': 'application/json' },
+                url: 'http://localhost:5674/testparams/raw'
+            }, (error, response, body) => {
+                expect(body).to.eq("3-123");
                 done();
             });
         });
